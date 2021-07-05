@@ -34,26 +34,30 @@ def init_functions(functions: dict, project=None, secrets=None):
 
 
 @dsl.pipeline(
-    name='Image classification demo',
+    name='Waste Image classification',
     description='Train an Image Classification TF Algorithm using MLRun on Waste Dataset'
 )
 def kfpipeline(
         image_archive='store:///images',
-        images_dir='/User/artifacts/images',
-        checkpoints_dir='/User/artifacts/models/checkpoints',
+        images_dir=f'/v3io/projects/waste-classifier/images',
+        checkpoints_dir=f'/v3io/projects/waste-classifier/models/checkpoints',
         model_name='waste_classifier',
         epochs: int=2):
 
+    base_url='/v3io/projects/waste-classifier/images/'
     # step 1: download and prep images
-    open_archive = funcs['utils'].as_step(name='download',
-                                          handler='open_archive',
-                                          params={'target_path': images_dir},
-                                          inputs={'archive_url': image_archive},
-                                          outputs=['content'])
+#     open_archive = funcs['utils'].as_step(name='download',
+#                                           handler='open_archive',
+#                                           params={'target_path': images_dir},
+#                                           inputs={'archive_url': image_archive},
+#                                           outputs=['content'])
 
     # step 2: train the model
-    train_dir = str(open_archive.outputs['content']) + '/TRAIN'
-    val_dir = str(open_archive.outputs['content']) + '/TEST'
+#     train_dir = str(open_archive.outputs['content']) + '/TRAIN'
+#     val_dir = str(open_archive.outputs['content']) + '/TEST'
+
+    train_dir = '/v3io/projects/waste-classifier/images/TRAIN'
+    val_dir = '/v3io/projects/waste-classifier/images/TEST'
     train = funcs['trainer'].as_step(name='train',
                                      params={'epochs': epochs,
                                              'checkpoints_dir': checkpoints_dir,
